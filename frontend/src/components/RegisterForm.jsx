@@ -4,6 +4,7 @@ import Link from "next/link";
 import { register } from "@/fetch/auth";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff, KeyRound, Mail, User } from "lucide-react";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -12,9 +13,9 @@ export default function RegisterForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState(false);
+  const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -34,9 +35,9 @@ export default function RegisterForm() {
         router.push("/login");
       }, 1000);
     } else {
-      setErrors(true);
+      setError(true);
       setTimeout(() => {
-        setErrors(false);
+        setError(false);
       }, 3000);
     }
   };
@@ -46,39 +47,29 @@ export default function RegisterForm() {
     setPasswordMatch(password === e.target.value);
   };
 
-  const handleShowPasssword = () => {
+  const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
   return (
-    <div className='w-full flex flex-col items-center justify-center gap-5'>
-      <h1 className='text-5xl font-bold mb-2'>REGISTER</h1>
-      
-      <label className='input input-bordered input-info flex items-center gap-2 w-1/3'>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          viewBox='0 0 16 16'
-          fill='currentColor'
-          className='h-4 w-4 opacity-70'
-        >
-          <path d='M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z' />
-        </svg>
-        <input type='text' className='grow' placeholder='Name' value={name}
-          onChange={(e) => setName(e.target.value)}/>
-      </label>
+    <div className='container mx-auto h-screen flex flex-col items-center justify-center gap-5 w-2/3 lg:w-1/4'>
+      <h1 className='text-5xl font-bold mb-2'>Register</h1>
 
-      <label className='input input-bordered input-info flex items-center gap-2 w-1/3'>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          viewBox='0 0 16 16'
-          fill='currentColor'
-          className='h-4 w-4 opacity-70'
-        >
-          <path d='M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z' />
-          <path d='M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z' />
-        </svg>
+      <label className='input input-bordered input-info flex items-center gap-2 w-full'>
+        <User />
         <input
           type='text'
+          className='grow'
+          placeholder='Name'
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </label>
+
+      <label className='input input-bordered input-info flex items-center gap-2 w-full'>
+        <Mail />
+        <input
+          type='email'
           className='grow'
           placeholder='Email'
           value={email}
@@ -86,96 +77,63 @@ export default function RegisterForm() {
         />
       </label>
 
-      <label className='input input-bordered input-info flex items-center gap-2 w-1/3'>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          viewBox='0 0 16 16'
-          fill='currentColor'
-          className='h-4 w-4 opacity-70'
+      <div className='relative w-full'>
+        <label
+          className={`input input-bordered input-info flex items-center gap-2 w-full ${
+            !passwordMatch ? "border-red-500 focus-border-red-500" : ""
+          }`}
         >
-          <path
-            fillRule='evenodd'
-            d='M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z'
-            clipRule='evenodd'
+          <KeyRound />
+          <input
+            type={showPassword ? "text" : "password"}
+            className='grow'
+            placeholder='Password'
+            value={password}
+            onChange={(e) => handlePasswordChange(e, setPassword)}
           />
-        </svg>
-        <input
-          type={showPassword ? "text" : "password"}
-          className='grow'
-          placeholder='Password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <button>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='currentColor'
-            className='size-6'
-            onClick={handleShowPasssword}
-          >
-            <path d='M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z' />
-            <path
-              fillRule='evenodd'
-              d='M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z'
-              clipRule='evenodd'
-            />
-          </svg>
-        </button>
-      </label>
-
-      <label className='input input-bordered input-info flex items-center gap-2 w-1/3'>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          viewBox='0 0 16 16'
-          fill='currentColor'
-          className='h-4 w-4 opacity-70'
+        </label>
+        <button
+          className='absolute right-2 top-1/2 transform -translate-y-1/2'
+          onClick={handleShowPassword}
+          type='button'
         >
-          <path
-            fillRule='evenodd'
-            d='M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z'
-            clipRule='evenodd'
-          />
-        </svg>
-        <input
-          type={showPassword ? "text" : "password"}
-          className='grow'
-          placeholder='Confirm Password'
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-
-        <button>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='currentColor'
-            className='size-6'
-            onClick={handleShowPasssword}
-          >
-            <path d='M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z' />
-            <path
-              fillRule='evenodd'
-              d='M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z'
-              clipRule='evenodd'
-            />
-          </svg>
+          {showPassword ? <EyeOff /> : <Eye />}
         </button>
-      </label>
+      </div>
+
+      <div className='relative w-full'>
+        <label
+          className={`input input-bordered input-info flex items-center gap-2 w-full ${
+            !passwordMatch ? "border-red-500 focus-border-red-500" : ""
+          }`}
+        >
+          <KeyRound />
+          <input
+            type={showPassword ? "text" : "password"}
+            className='grow'
+            placeholder='Confirm Password'
+            value={confirmPassword}
+            onChange={(e) => handlePasswordChange(e, setConfirmPassword)}
+          />
+        </label>
+        <button
+          className='absolute right-2 top-1/2 transform -translate-y-1/2'
+          onClick={handleShowPassword}
+          type='button'
+        >
+          {showPassword ? <EyeOff /> : <Eye />}
+        </button>
+      </div>
 
       <button
-        className='btn btn-info w-1/3 text-xl font-bold'
+        className='btn btn-info text-xl font-bold w-full'
         onClick={handleRegister}
       >
         Register
       </button>
-      <p className='font-medium'>
-        Already have an account?{" "}
-        <Link href={"/register"} className='link link-info'>
-          Login here!
-        </Link>
-      </p>
+      <Link href={"/login"} className='link link-info'>
+        Already have an account?
+      </Link>
     </div>
   );
 }
