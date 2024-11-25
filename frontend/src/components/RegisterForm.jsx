@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { register } from "@/fetch/auth";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Eye, EyeOff, KeyRound, Mail, User } from "lucide-react";
+import Link from 'next/link';
+import { register } from '@/lib/api/auth';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Eye, EyeOff, KeyRound, Mail, User } from 'lucide-react';
 
 export default function RegisterForm() {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -29,10 +29,10 @@ export default function RegisterForm() {
       password,
     });
 
-    if (response.message === "Register Success") {
+    if (response.message === 'Register Success') {
       setSuccess(true);
       setTimeout(() => {
-        router.push("/login");
+        router.push('/login');
       }, 1000);
     } else {
       setError(true);
@@ -80,12 +80,12 @@ export default function RegisterForm() {
       <div className='relative w-full'>
         <label
           className={`input input-bordered input-info flex items-center gap-2 w-full ${
-            !passwordMatch ? "border-red-500 focus-border-red-500" : ""
+            !passwordMatch ? 'border-red-500 focus-border-red-500' : ''
           }`}
         >
           <KeyRound />
           <input
-            type={showPassword ? "text" : "password"}
+            type={showPassword ? 'text' : 'password'}
             className='grow'
             placeholder='Password'
             value={password}
@@ -104,12 +104,12 @@ export default function RegisterForm() {
       <div className='relative w-full'>
         <label
           className={`input input-bordered input-info flex items-center gap-2 w-full ${
-            !passwordMatch ? "border-red-500 focus-border-red-500" : ""
+            !passwordMatch ? 'border-red-500 focus-border-red-500' : ''
           }`}
         >
           <KeyRound />
           <input
-            type={showPassword ? "text" : "password"}
+            type={showPassword ? 'text' : 'password'}
             className='grow'
             placeholder='Confirm Password'
             value={confirmPassword}
@@ -131,7 +131,7 @@ export default function RegisterForm() {
       >
         Register
       </button>
-      <Link href={"/login"} className='link link-info'>
+      <Link href={'/login'} className='link link-info'>
         Already have an account?
       </Link>
     </div>

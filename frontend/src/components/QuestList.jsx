@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import moment from "moment";
-import { findAllQuests, updateQuest } from "@/fetch/quest";
+import { useState, useEffect } from 'react';
+import moment from 'moment';
+import { findAllQuests, updateQuest, destroyQuest } from '@/lib/api/quest';
 
 export default function QuestList() {
   const [quests, setQuests] = useState([]);
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [id, setId] = useState("");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [id, setId] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,7 +21,7 @@ export default function QuestList() {
           setQuests(data.quests);
         }
       } catch (error) {
-        console.error("Error fetching quests:", error);
+        console.error('Error fetching quests:', error);
       }
     };
 
@@ -30,16 +30,16 @@ export default function QuestList() {
 
   const handleComplete = async (questId) => {
     try {
-      await updateQuest(questId, { status: "completed" });
+      await updateQuest(questId, { status: 'completed' });
       setQuests((prevQuests) =>
         prevQuests.map((quest) =>
-          quest.id === questId ? { ...quest, status: "completed" } : quest
+          quest.id === questId ? { ...quest, status: 'completed' } : quest
         )
       );
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (error) {
-      console.error("Error updating quest:", error);
+      console.error('Error updating quest:', error);
       setError(true);
       setTimeout(() => setError(false), 3000);
     }
@@ -47,16 +47,16 @@ export default function QuestList() {
 
   const handleCancel = async (questId) => {
     try {
-      await updateQuest(questId, { status: "cancelled" });
+      await updateQuest(questId, { status: 'cancelled' });
       setQuests((prevQuests) =>
         prevQuests.map((quest) =>
-          quest.id === questId ? { ...quest, status: "cancelled" } : quest
+          quest.id === questId ? { ...quest, status: 'cancelled' } : quest
         )
       );
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (error) {
-      console.error("Error updating quest:", error);
+      console.error('Error updating quest:', error);
       setError(true);
       setTimeout(() => setError(false), 3000);
     }
@@ -65,7 +65,7 @@ export default function QuestList() {
   const handleEditModal = (quest) => {
     setTitle(quest.title);
     setDescription(quest.description);
-    setDueDate(quest.dueDate ? moment(quest.dueDate).format("YYYY-MM-DD") : "");
+    setDueDate(quest.dueDate ? moment(quest.dueDate).format('YYYY-MM-DD') : '');
     setId(quest.id);
     document.getElementById(`editQuest-${quest.id}`).showModal();
   };
@@ -74,12 +74,14 @@ export default function QuestList() {
     const questData = {
       title,
       description,
-      dueDate,
+      ...(quests.find((quest) => quest.id === id).priority === 'main' && {
+        dueDate,
+      }),
     };
 
     try {
       const response = await updateQuest(id, questData);
-      console.log("Quest updated successfully:", response);
+      console.log('Quest updated successfully:', response);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
       setQuests((prevQuests) =>
@@ -89,7 +91,7 @@ export default function QuestList() {
       );
       document.getElementById(`editQuest-${id}`).close();
     } catch (error) {
-      console.error("Error updating quest:", error);
+      console.error('Error updating quest:', error);
       setError(true);
       setTimeout(() => setError(false), 3000);
     }
@@ -98,7 +100,7 @@ export default function QuestList() {
   const handleReopenModal = (quest) => {
     setTitle(quest.title);
     setDescription(quest.description);
-    setDueDate(quest.dueDate ? moment(quest.dueDate).format("YYYY-MM-DD") : "");
+    setDueDate(quest.dueDate ? moment(quest.dueDate).format('YYYY-MM-DD') : '');
     setId(quest.id);
     document.getElementById(`reopen-${quest.id}`).showModal();
   };
@@ -107,13 +109,15 @@ export default function QuestList() {
     const questData = {
       title,
       description,
-      dueDate,
-      status: "ongoing"
+      ...(quests.find((quest) => quest.id === id).priority === 'main' && {
+        dueDate,
+      }),
+      status: 'ongoing',
     };
 
     try {
       const response = await updateQuest(id, questData);
-      console.log("Quest updated successfully:", response);
+      console.log('Quest updated successfully:', response);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
       setQuests((prevQuests) =>
@@ -121,9 +125,22 @@ export default function QuestList() {
           quest.id === id ? { ...quest, ...questData } : quest
         )
       );
-      document.getElementById(`editQuest-${id}`).close();
     } catch (error) {
-      console.error("Error updating quest:", error);
+      console.error('Error updating quest:', error);
+      setError(true);
+      setTimeout(() => setError(false), 3000);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await destroyQuest(id);
+      console.log('Quest deleted successfully:', response);
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+      setQuests((prevQuests) => prevQuests.filter((quest) => quest.id !== id));
+    } catch (error) {
+      console.error('Error deleting quest:', error);
       setError(true);
       setTimeout(() => setError(false), 3000);
     }
@@ -132,7 +149,7 @@ export default function QuestList() {
   return (
     <div>
       {success && (
-        <div className='toast toast-center'>
+        <div className='toast toast-top toast-center'>
           <div className='alert alert-success'>
             <span>Quest Updated!</span>
           </div>
@@ -140,7 +157,7 @@ export default function QuestList() {
       )}
 
       {error && (
-        <div className='toast toast-center'>
+        <div className='toast toast-top toast-center'>
           <div className='alert alert-error'>
             <span>Failed to Update Quest!</span>
           </div>
@@ -151,13 +168,13 @@ export default function QuestList() {
         <div className=' flex flex-col justify-center items-center gap-5 mb-5'>
           {quests.map(
             (quest) =>
-              quest.status === "ongoing" && (
+              quest.status === 'ongoing' && (
                 <div
                   key={quest.id}
                   className='card relative bg-neutral text-neutral-content w-2/3 shadow-xl'
                 >
                   <div className='absolute left-3 top-3 badge badge-info'>
-                    {quest.status === "ongoing" ? "Ongoing" : ""}
+                    {quest.status === 'ongoing' ? 'Ongoing' : ''}
                   </div>
 
                   <svg
@@ -241,14 +258,14 @@ export default function QuestList() {
 
                   <div className='mt-2 card-body items-center text-center'>
                     <h2 className='card-title'>
-                      {quest.priority === "main" ? "Main Quest" : "Side Quest"}:{" "}
+                      {quest.priority === 'main' ? 'Main Quest' : 'Side Quest'}:{' '}
                       {quest.title}
                     </h2>
                     <p>{quest.description}</p>
                     <p>
                       {quest.dueDate
-                        ? moment(quest.dueDate).format("DD MMM YYYY")
-                        : ""}
+                        ? moment(quest.dueDate).format('DD MMM YYYY')
+                        : ''}
                     </p>
 
                     <div className='justify-center items-center flex w-full'>
@@ -339,25 +356,25 @@ export default function QuestList() {
         <div className=' flex flex-col justify-center items-center gap-5 mb-5 pt-5'>
           {quests.map(
             (quest) =>
-              quest.status === "completed" && (
+              quest.status === 'completed' && (
                 <div
                   key={quest.id}
                   className='card relative bg-info text-info-content w-2/3 shadow-xl'
                 >
                   <div className='absolute left-3 top-3 badge badge-success'>
-                    {quest.status === "completed" ? "Completed" : ""}
+                    {quest.status === 'completed' ? 'Completed' : ''}
                   </div>
 
                   <div className='mt-2 card-body items-center text-center'>
                     <h2 className='card-title'>
-                      {quest.priority === "main" ? "Main Quest" : "Side Quest"}:{" "}
+                      {quest.priority === 'main' ? 'Main Quest' : 'Side Quest'}:{' '}
                       {quest.title}
                     </h2>
                     <p>{quest.description}</p>
                     <p>
                       {quest.updatedAt
-                        ? moment(quest.updatedAt).format("DD MMM YYYY")
-                        : ""}
+                        ? moment(quest.updatedAt).format('DD MMM YYYY')
+                        : ''}
                     </p>
                   </div>
                 </div>
@@ -368,29 +385,29 @@ export default function QuestList() {
         <div className=' flex flex-col justify-center items-center gap-5 pt-5 mb-5'>
           {quests.map(
             (quest) =>
-              (quest.status === "expired" || quest.status === "cancelled") && (
+              (quest.status === 'expired' || quest.status === 'cancelled') && (
                 <div
                   key={quest.id}
                   className='card relative bg-error text-error-content w-2/3 shadow-xl'
                 >
                   <div className='absolute left-3 top-3 badge badge-warning'>
-                    {quest.status === "cancelled"
-                      ? "Cancelled"
-                      : quest.status === "expired"
-                      ? "Expired"
-                      : ""}
+                    {quest.status === 'cancelled'
+                      ? 'Cancelled'
+                      : quest.status === 'expired'
+                      ? 'Expired'
+                      : ''}
                   </div>
 
                   <div className='mt-2 card-body items-center text-center'>
                     <h2 className='card-title'>
-                      {quest.priority === "main" ? "Main Quest" : "Side Quest"}:{" "}
+                      {quest.priority === 'main' ? 'Main Quest' : 'Side Quest'}:{' '}
                       {quest.title}
                     </h2>
                     <p>{quest.description}</p>
                     <p>
                       {quest.dueDate
-                        ? moment(quest.dueDate).format("DD MMM YYYY")
-                        : ""}
+                        ? moment(quest.dueDate).format('DD MMM YYYY')
+                        : ''}
                     </p>
 
                     <div className='justify-center items-center flex w-full'>

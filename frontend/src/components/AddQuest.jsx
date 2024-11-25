@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { createQuest } from "@/fetch/quest";
-import { useState } from "react";
+import { createQuest } from '@/lib/api/quest';
+import { useState } from 'react';
 
 export default function AddQuest() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [type, setType] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [type, setType] = useState('');
+  const [dueDate, setDueDate] = useState('');
 
   const handleCreate = async () => {
-    if (type === "main" && !dueDate) {
-      alert("Due date is required for Main Quests.");
+    if (type === 'main' && !dueDate) {
+      alert('Due date is required for Main Quests.');
       return;
     }
 
-    const questExp = type === "main" ? 10 : type === "side" ? 5 : 0;
+    const questExp = type === 'main' ? 10 : type === 'side' ? 5 : 0;
 
     const questData = {
       title,
@@ -27,16 +27,16 @@ export default function AddQuest() {
 
     try {
       const response = await createQuest(questData);
-      console.log("Quest created successfully:", response);
+      console.log('Quest created successfully:', response);
 
       document.getElementById(`addQuest`).close();
-      setTitle("");
-      setDescription("");
-      setType("");
-      setDueDate("");
-      window.location.reload()
+      setTitle('');
+      setDescription('');
+      setType('');
+      setDueDate('');
+      window.location.reload();
     } catch (error) {
-      console.error("Error creating quest:", error);
+      console.error('Error creating quest:', error);
     }
   };
 

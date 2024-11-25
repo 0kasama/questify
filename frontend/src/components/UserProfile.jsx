@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { findUser } from "@/fetch/user";
-import { findAllLevels } from "@/fetch/level";
-import { useState, useEffect } from "react";
+import { findUser } from '@/lib/api/user';
+import { findAllLevels } from '@/lib/api/level';
+import { useState, useEffect } from 'react';
 
 export default function UserProfile() {
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState('');
   const [levels, setLevels] = useState([]);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function UserProfile() {
           setLevels(levelData.levels);
         }
       } catch (error) {
-        console.error("Error fetching user or levels:", error);
+        console.error('Error fetching user or levels:', error);
       }
     };
 

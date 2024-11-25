@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import Cookies from "js-cookie";
-import Link from "next/link";
-import { login } from "@/fetch/auth";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Eye, EyeOff, KeyRound, Mail } from "lucide-react";
+import Cookies from 'js-cookie';
+import Link from 'next/link';
+import { login } from '@/lib/api/auth';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Eye, EyeOff, KeyRound, Mail } from 'lucide-react';
 
 export default function LoginForm() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -23,19 +23,14 @@ export default function LoginForm() {
       if (!token) {
         setError(true);
       } else {
-        Cookies.set("accessToken", token);
+        Cookies.set('accessToken', token);
         setSuccess(true);
         setTimeout(() => {
-          router.push("/quest");
+          router.push('/quest');
         }, 1000);
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500);
       }
     } catch (error) {
       setError(true);
-    } finally {
-      setTimeout(() => setError(false), 3000);
     }
   };
 
@@ -61,7 +56,7 @@ export default function LoginForm() {
         <label className='input input-bordered input-info flex items-center gap-2 w-full'>
           <KeyRound />
           <input
-            type={showPassword ? "text" : "password"}
+            type={showPassword ? 'text' : 'password'}
             className='grow'
             placeholder='Password'
             value={password}
@@ -82,7 +77,7 @@ export default function LoginForm() {
       >
         Login
       </button>
-      <Link href={"/register"} className='link link-info'>
+      <Link href={'/register'} className='link link-info'>
         Don't have an account yet?
       </Link>
     </div>
