@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import Theme from "@/components/Theme";
-import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import Link from 'next/link';
+import Theme from '@/components/Theme';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
   const router = useRouter();
 
   const handleLogout = () => {
-    Cookies.remove("accessToken");
-    Cookies.remove("isLoggedIn");
-    router.push("/");
+    Cookies.remove('accessToken');
+    Cookies.remove('isLoggedIn');
+    router.push('/');
   };
 
   return (
@@ -39,10 +39,10 @@ export default function Navbar() {
             className='menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow'
           >
             <li>
-              <Link href={"/profile"}>Profile</Link>
+              <Link href={'/profile'}>Profile</Link>
             </li>
             <li>
-              <Link href={"/quest"}>Quests</Link>
+              <Link href={'/quest'}>Quests</Link>
             </li>
             <li>
               <a className='text-red-500' onClick={handleLogout}>
@@ -53,7 +53,9 @@ export default function Navbar() {
         </div>
       </div>
       <div className='navbar-center'>
-        <a className='btn btn-ghost text-xl'>Questify</a>
+        <Link href={'/quest'} className='btn btn-ghost text-xl'>
+          Questify
+        </Link>
       </div>
       <div className='navbar-end pr-2'>
         <Theme />

@@ -1,20 +1,31 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 export default function Theme() {
-  const [theme, setTheme] = useState("night");
+  const [theme, setTheme] = useState(null);
 
   const handleTheme = (e) => {
     if (e.target.checked) {
-      setTheme("night");
+      setTheme('night');
     } else {
-      setTheme("light");
+      setTheme('light');
     }
   };
 
   useEffect(() => {
-    localStorage.setItem("theme", theme);
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else {
+      setTheme('night');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (theme !== null) {
+      localStorage.setItem('theme', theme);
+    }
   }, [theme]);
 
   return (
@@ -22,7 +33,7 @@ export default function Theme() {
       <input
         type='checkbox'
         onChange={handleTheme}
-        checked={theme === "night"}
+        checked={theme === 'night'}
         className='theme-controller'
         value='night'
       />
