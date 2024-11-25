@@ -1,4 +1,4 @@
-const { BASE_URL } = require("@/libs/baseUrl");
+const { BASE_URL } = require("@/lib/baseUrl");
 import Cookies from "js-cookie";
 
 export const findAllQuests = async () => {

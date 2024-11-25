@@ -1,4 +1,4 @@
-const { BASE_URL } = require("@/libs/baseUrl");
+const { BASE_URL } = require("@/lib/baseUrl");
 import Cookies from "js-cookie";
 
 export const findAllLevels = async () => {
@@ -19,7 +19,7 @@ export const findAllLevels = async () => {
   } catch (err) {}
 };
 
-export const findQuest = async (id) => {
+export const findLevel = async (id) => {
   const accessToken = Cookies.get("accessToken");
   if (!accessToken) {
     throw new Error("User is not logged in");
