@@ -1,4 +1,4 @@
-const { Quest, User } = require("../models");
+const { Quest, User } = require('../models');
 
 const findAll = async (params) => {
   const userId = +params;
@@ -22,7 +22,7 @@ const findOne = async (params) => {
 
   if (!quest) {
     throw {
-      name: "ErrorNotFound",
+      name: 'ErrorNotFound',
     };
   }
 
@@ -30,11 +30,19 @@ const findOne = async (params) => {
 };
 
 const create = async ({ userId, params }) => {
+  if (params.priority !== 'main' && params.priority !== 'side') {
+    throw new Error('Priority must be either "main" or "side"');
+  }
+
+  if (params.priority === 'main' && !params.dueDate) {
+    throw new Error('Due date is required for main priority quests');
+  }
+
   const quest = await Quest.create({
     userId: userId,
     title: params.title,
     description: params.description,
-    dueDate: params.dueDate,
+    ...(params.dueDate && { dueDate: params.dueDate }),
     priority: params.priority,
     exp: params.exp,
   });
@@ -54,21 +62,21 @@ const update = async (params) => {
 
   if (!quest) {
     throw {
-      name: "ErrorNotFound",
+      name: 'ErrorNotFound',
     };
   }
 
   const currentStatus = quest.status;
 
-  if (currentStatus === "completed" && data.status === "ongoing") {
+  if (currentStatus === 'completed' && data.status === 'ongoing') {
     throw {
-      name: "InvalidStatusChange",
+      name: 'InvalidStatusChange',
     };
   }
 
   await quest.update(data);
 
-  if (data.status === "completed" && currentStatus !== "completed") {
+  if (data.status === 'completed' && currentStatus !== 'completed') {
     const expGained = quest.exp;
 
     const user = await User.findOne({ where: { id: userId } });
@@ -92,7 +100,7 @@ const destroy = async (params) => {
 
   if (!quest) {
     throw {
-      name: "ErrorNotFound",
+      name: 'ErrorNotFound',
     };
   }
 
