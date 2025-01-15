@@ -2,15 +2,15 @@
 
 import Link from 'next/link';
 import Theme from '@/components/Theme';
-import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/context/authContext';
 
 export default function Navbar() {
   const router = useRouter();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
-    Cookies.remove('accessToken');
-    Cookies.remove('isLoggedIn');
+    logout();
     router.push('/');
   };
 

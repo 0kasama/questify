@@ -1,26 +1,20 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Theme from "./Theme";
-import Cookies from "js-cookie";
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Theme from './Theme';
+import { useAuth } from '@/lib/context/authContext';
+import { useEffect } from 'react';
 
 export default function Hero() {
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (Cookies.get("isLoggedIn") === "true") {
-      setIsLoggedIn(true);
+    if (isAuthenticated) {
+      router.push('/quest');
     }
-  }, []);
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      router.push("/quest");
-    }
-  }, [isLoggedIn]);
+  }, [isAuthenticated, router]);
 
   return (
     <div className='hero bg-base-200 min-h-screen'>
@@ -32,10 +26,10 @@ export default function Hero() {
             Level Up Your Productivity: Turn Tasks into Quests!
           </p>
           <button className='btn btn-primary w-1/3 mr-2'>
-            <Link href={"/login"}>Login</Link>
+            <Link href={'/login'}>Login</Link>
           </button>
           <button className='btn btn-neutral w-1/3'>
-            <Link href={"/register"}>Register</Link>
+            <Link href={'/register'}>Register</Link>
           </button>
         </div>
       </div>

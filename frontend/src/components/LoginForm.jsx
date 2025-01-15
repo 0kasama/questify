@@ -1,11 +1,11 @@
 'use client';
 
-import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { login } from '@/lib/api/auth';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, KeyRound, Mail } from 'lucide-react';
+import { useAuth } from '@/lib/context/authContext';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -14,6 +14,7 @@ export default function LoginForm() {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const { login: setAuth } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -23,14 +24,13 @@ export default function LoginForm() {
       if (!token) {
         setError(true);
       } else {
-        Cookies.set('accessToken', token);
+        setAuth(token);
         setSuccess(true);
-        setTimeout(() => {
-          router.push('/quest');
-        }, 1000);
+        setTimeout(() => router.push('/quest'), 1000);
       }
     } catch (error) {
       setError(true);
+      setTimeout(() => setError(false), 3000);
     }
   };
 
